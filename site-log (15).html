@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadow Storm Technik Builders Corp. — Construction Progress Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --concrete:#EDEAE1;
+    --charcoal:#1F1D1A;
+    --steel:#445059;
+    --steel-light:#7C8A93;
+    --safety:#E05A00;
+    --safety-dark:#B0470A;
+    --caution:#F2B705;
+    --white:#FFFFFF;
+    --line:#D3CDBF;
+    --danger:#B23A2E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--concrete);
+    color:var(--charcoal);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .hazard-bar{
+    height:10px;
+    width:100%;
+    background:repeating-linear-gradient(
+      135deg,
+      var(--charcoal) 0px, var(--charcoal) 18px,
+      var(--caution) 18px, var(--caution) 36px
+    );
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px 80px;
+  }
+  header.page{
+    padding:44px 0 32px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:36px;
+  }
+  .header-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .settings-btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:9px 16px;
+    background:none;
+    border:1px solid var(--steel);
+    color:var(--steel);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .settings-btn:hover{border-color:var(--safety);color:var(--safety);}
+  .settings-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    margin:12px 0 4px;
+  }
+  .settings-row-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--charcoal);
+  }
+  .settings-row-desc{
+    font-size:12px;
+    color:var(--steel);
+    margin-top:2px;
+  }
+  h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:16px;
+    letter-spacing:-0.01em;
+    margin:0 0 8px;
+    color:var(--safety);
+  }
+  header.page p{
+    margin:0;
+    color:var(--steel);
+    font-size:16px;
+    max-width:52ch;
+  }
+  header.page p.subtitle{
+    font-family:'Archivo', sans-serif;
+    font-weight:900;
+    font-size:22px;
+    color:var(--charcoal);
+    margin:0 0 10px;
+  }
+  h2.section-title{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:20px;
+    margin:0 0 18px;
+    color:var(--charcoal);
+  }
+  .panel{
+    background:var(--white);
+    border:1px solid var(--line);
+    padding:28px;
+    margin-bottom:48px;
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 20px;
+  }
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--steel);
+  }
+  input[type=text], input[type=date], input[type=time], select{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    background:var(--concrete);
+    color:var(--charcoal);
+    border-radius:2px;
+  }
+  input[type=text]:focus, input[type=date]:focus, input[type=time]:focus, select:focus{
+    outline:2px solid var(--safety);
+    outline-offset:1px;
+    background:var(--white);
+  }
+  .group-header{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--charcoal);
+  }
+  .group-header h3{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:18px;
+    margin:0;
+  }
+  .group-header .group-count{
+    font-size:13px;
+    color:var(--steel);
+  }
+  .group-block{
+    margin-bottom:36px;
+  }
+  .upload-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    grid-column:1 / -1;
+  }
+  .upload-box{
+    border:1.5px dashed var(--steel-light);
+    background:var(--concrete);
+    padding:16px;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    min-height:140px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:border-color .15s ease;
+  }
+  .upload-box:hover{border-color:var(--safety);}
+  .upload-box.filled{border-style:solid;border-color:var(--steel);}
+  .upload-box img{
+    max-width:100%;
+    max-height:110px;
+    object-fit:cover;
+  }
+  .upload-box span.tag{
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.03em;
+    color:var(--steel);
+  }
+  .upload-box input[type=file]{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    cursor:pointer;
+  }
+  .upload-box p.hint{
+    margin:0;
+    font-size:13px;
+    color:var(--steel-light);
+  }
+  button.submit{
+    grid-column:1 / -1;
+    margin-top:6px;
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.01em;
+    color:var(--white);
+    background:var(--safety);
+    border:none;
+    padding:14px 22px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  button.submit:hover{background:var(--safety-dark);}
+  .error-text{
+    grid-column:1 / -1;
+    color:var(--danger);
+    font-size:13px;
+    margin:-8px 0 0;
+    display:none;
+  }
+  .log-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .log-count{
+    font-size:13px;
+    color:var(--steel);
+  }
+  .view-toggle{
+    display:flex;
+    border:1px solid var(--steel);
+  }
+  .view-btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:8px 14px;
+    background:var(--white);
+    color:var(--steel);
+    border:none;
+    cursor:pointer;
+  }
+  .view-btn + .view-btn{
+    border-left:1px solid var(--steel);
+  }
+  .view-btn.active{
+    background:var(--charcoal);
+    color:var(--white);
+  }
+  .office-table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--white);
+    border:1px solid var(--line);
+  }
+  .office-table th{
+    font-family:'Archivo', sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    color:var(--white);
+    background:var(--charcoal);
+    text-align:left;
+    padding:12px 16px;
+  }
+  .office-table td{
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+    vertical-align:top;
+  }
+  .office-table tr:last-child td{border-bottom:none;}
+  .office-table tr.no-entries td{color:var(--steel-light);}
+  .office-table .site-name{
+    font-weight:700;
+    color:var(--charcoal);
+  }
+  .office-table .count-badge{
+    display:inline-block;
+    min-width:22px;
+    text-align:center;
+    padding:2px 8px;
+    background:var(--caution);
+    color:var(--charcoal);
+    font-weight:700;
+    font-size:13px;
+  }
+  @media (max-width:640px){
+    .office-table{font-size:13px;}
+    .office-table th, .office-table td{padding:10px;}
+  }
+  .entry{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-left:5px solid var(--steel);
+    margin-bottom:22px;
+  }
+  .photo-tabs-wrap{
+    padding:16px 20px 10px;
+    background:var(--white);
+  }
+  .photo-tabs{
+    display:inline-flex;
+    border:1px solid var(--steel);
+  }
+  .photo-tab{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:8px 18px;
+    background:var(--white);
+    color:var(--steel);
+    border:none;
+    cursor:pointer;
+  }
+  .photo-tab + .photo-tab{border-left:1px solid var(--steel);}
+  .photo-tab.active{background:var(--charcoal);color:var(--white);}
+  .photo-frame{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    overflow:hidden;
+    background:var(--charcoal);
+  }
+  .photo-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .photo-frame .label{
+    position:absolute;
+    top:12px;
+    left:12px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--white);
+    background:rgba(31,29,26,.72);
+    padding:4px 10px;
+    letter-spacing:.03em;
+  }
+  .zoom-open{
+    position:absolute;
+    bottom:12px;
+    right:12px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(31,29,26,.72);
+    border:1px solid rgba(255,255,255,.4);
+    color:var(--white);
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:auto;
+  }
+  .zoom-open:hover{border-color:var(--caution);background:rgba(31,29,26,.9);}
+  .replace-btn{
+    position:absolute;
+    bottom:12px;
+    left:12px;
+    padding:9px 14px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:12px;
+    font-weight:600;
+    background:rgba(31,29,26,.72);
+    border:1px solid rgba(255,255,255,.4);
+    color:var(--white);
+    cursor:pointer;
+  }
+  .replace-btn:hover{border-color:var(--caution);background:rgba(31,29,26,.9);}
+  .lightbox-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,14,12,.94);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:200;
+  }
+  .lightbox-overlay.open{display:flex;}
+  .lightbox-box{
+    width:100%;
+    max-width:1100px;
+    height:100%;
+    max-height:88vh;
+    display:flex;
+    flex-direction:column;
+    background:var(--charcoal);
+    border:1px solid var(--steel);
+  }
+  .lightbox-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:12px 16px;
+    color:var(--white);
+    flex-wrap:wrap;
+  }
+  .lightbox-header .lightbox-title{
+    font-size:13px;
+    font-weight:600;
+    color:var(--white);
+  }
+  .zoom-controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .zoom-btn{
+    width:32px;
+    height:32px;
+    background:none;
+    border:1px solid var(--steel-light);
+    color:var(--white);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .zoom-btn:hover{border-color:var(--caution);color:var(--caution);}
+  .zoom-level{
+    font-size:12px;
+    color:var(--steel-light);
+    min-width:42px;
+    text-align:center;
+  }
+  .lightbox-close{
+    background:none;
+    border:1px solid var(--steel-light);
+    color:var(--white);
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .lightbox-close:hover{border-color:var(--caution);color:var(--caution);}
+  .lightbox-scroll{
+    flex:1;
+    overflow:auto;
+    background:#000;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  .lightbox-scroll .photo-frame{
+    flex-shrink:0;
+  }
+  @media (max-width:640px){
+    .lightbox-header{justify-content:center;}
+  }
+  .meta{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:24px;
+    padding:16px 20px;
+  }
+  .meta-item{display:flex;flex-direction:column;gap:2px;}
+  .meta-item .k{font-size:11px;color:var(--steel-light);font-weight:600;}
+  .meta-item .v{font-size:15px;font-weight:600;color:var(--charcoal);}
+  .meta .spacer{flex:1;}
+  .delete-btn{
+    border:1px solid var(--line);
+    background:none;
+    color:var(--steel);
+    font-size:13px;
+    padding:8px 14px;
+    cursor:pointer;
+  }
+  .delete-btn:hover{border-color:var(--danger);color:var(--danger);}
+  .comment-block{
+    border-top:1px solid var(--line);
+    padding:16px 20px 20px;
+  }
+  .comment-block label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    color:var(--steel-light);
+    margin-bottom:6px;
+  }
+  .comment-block textarea{
+    width:100%;
+    min-height:64px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    background:var(--concrete);
+    color:var(--charcoal);
+    border-radius:2px;
+    resize:vertical;
+  }
+  .comment-block textarea:focus{
+    outline:2px solid var(--safety);
+    outline-offset:1px;
+    background:var(--white);
+  }
+  .comment-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:8px;
+  }
+  .comment-save{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    padding:8px 14px;
+    cursor:pointer;
+    border:1px solid var(--safety);
+    background:var(--safety);
+    color:var(--white);
+  }
+  .comment-save:hover{background:var(--safety-dark);}
+  .comment-status{
+    font-size:12px;
+    color:var(--steel);
+    display:none;
+  }
+  .empty{
+    border:1px dashed var(--line);
+    padding:48px 24px;
+    text-align:center;
+    color:var(--steel);
+  }
+  .empty p.big{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:18px;
+    color:var(--charcoal);
+    margin:0 0 6px;
+  }
+  .shared-note{
+    font-size:13px;
+    color:var(--steel);
+    margin:-24px 0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .admin-link{
+    background:none;
+    border:none;
+    color:var(--safety);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    padding:0;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    white-space:nowrap;
+  }
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(31,29,26,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-top:4px solid var(--safety);
+    padding:26px;
+    max-width:360px;
+    width:100%;
+  }
+  .modal-box h3{
+    font-family:'Archivo', sans-serif;
+    font-weight:700;
+    font-size:17px;
+    margin:0 0 6px;
+  }
+  .modal-box p.desc{
+    font-size:13px;
+    color:var(--steel);
+    margin:0 0 16px;
+  }
+  .modal-box input[type=password]{
+    width:100%;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:15px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    background:var(--concrete);
+    color:var(--charcoal);
+    border-radius:2px;
+    margin-bottom:8px;
+  }
+  .modal-box input[type=password]:focus{
+    outline:2px solid var(--safety);
+    outline-offset:1px;
+    background:var(--white);
+  }
+  .modal-error{
+    color:var(--danger);
+    font-size:13px;
+    margin:0 0 10px;
+    display:none;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:6px;
+  }
+  .modal-actions button{
+    flex:1;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    padding:10px 14px;
+    cursor:pointer;
+    border:1px solid var(--line);
+    background:var(--white);
+    color:var(--charcoal);
+  }
+  .modal-actions button.primary{
+    background:var(--safety);
+    border-color:var(--safety);
+    color:var(--white);
+  }
+  .modal-actions button.primary:hover{background:var(--safety-dark);}
+  .modal-actions button.secondary:hover{background:var(--concrete);}
+  @media (max-width:640px){
+    .form-grid{grid-template-columns:1fr;}
+    .upload-row{grid-template-columns:1fr;}
+    h1{font-size:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="hazard-bar"></div>
+<div class="wrap">
+  <header class="page">
+    <div class="header-top">
+      <h1>Shadow Storm Technik Builders Corp.</h1>
+      <button type="button" class="settings-btn" id="settings-btn">Settings</button>
+    </div>
+    <p class="subtitle">Site Activity Log</p>
+    <p>Record dated before-and-after photos for every task, tagged with the site and the worker assigned.</p>
+  </header>
+
+  <p class="shared-note">
+    <span>Entries are shared — everyone using this log can see and add to it. Only the admin can delete entries.</span>
+  </p>
+
+  <div class="modal-overlay" id="settings-overlay">
+    <div class="modal-box">
+      <h3>Settings</h3>
+      <p class="desc">Manage admin controls for this log.</p>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-title">Admin passcode</div>
+          <div class="settings-row-desc">Required to delete entries or change this passcode.</div>
+        </div>
+        <button type="button" class="secondary" id="settings-passcode-btn">Set passcode</button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="settings-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <h3 id="modal-title">Enter admin passcode</h3>
+      <p class="desc" id="modal-desc">Deleting entries requires the admin passcode.</p>
+      <input type="password" id="modal-input" placeholder="Passcode" autocomplete="off">
+      <p class="modal-error" id="modal-error"></p>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="modal-cancel">Cancel</button>
+        <button type="button" class="primary" id="modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox-overlay" id="lightbox-overlay">
+    <div class="lightbox-box">
+      <div class="lightbox-header">
+        <span class="lightbox-title" id="lightbox-title"></span>
+        <div class="photo-tabs" id="lightbox-tabs">
+          <button type="button" class="photo-tab active" id="lightbox-tab-before">Before</button>
+          <button type="button" class="photo-tab" id="lightbox-tab-after">After</button>
+        </div>
+        <div class="zoom-controls">
+          <button type="button" class="zoom-btn" id="zoom-out-btn">−</button>
+          <span class="zoom-level" id="zoom-level">100%</span>
+          <button type="button" class="zoom-btn" id="zoom-in-btn">+</button>
+        </div>
+        <button type="button" class="lightbox-close" id="lightbox-close-btn">Close</button>
+      </div>
+      <div class="lightbox-scroll" id="lightbox-scroll">
+        <div class="photo-frame" id="lightbox-compare" style="width:100%;">
+          <img id="lightbox-before-img" alt="Before photo">
+          <img id="lightbox-after-img" alt="After photo" style="display:none;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2 class="section-title">Add entry</h2>
+    <form class="form-grid" id="entry-form">
+      <div class="field">
+        <label for="date">Date</label>
+        <input type="date" id="date" required>
+      </div>
+      <div class="field">
+        <label for="location">Site location</label>
+        <select id="location" required>
+          <option value="" disabled selected>Select a site</option>
+          <option>Otis</option>
+          <option>Palanan</option>
+          <option>Estafine</option>
+          <option>San Juan</option>
+          <option>Bignay</option>
+          <option>Yu Residences</option>
+          <option>Hereford</option>
+          <option>Meycauyan</option>
+          <option>Others</option>
+        </select>
+      </div>
+      <div class="field" id="location-other-field" style="display:none;">
+        <label for="location-other">Site name</label>
+        <input type="text" id="location-other" placeholder="Name the site">
+      </div>
+      <div class="field full">
+        <label for="worker">Worker assigned</label>
+        <input type="text" id="worker" placeholder="Name of worker" required>
+      </div>
+      <div class="upload-row">
+        <div class="upload-box" id="before-box">
+          <span class="tag">Before photo</span>
+          <p class="hint">Tap to upload</p>
+          <input type="file" accept="image/*" capture="environment" id="before-input">
+        </div>
+        <div class="upload-box" id="after-box">
+          <span class="tag">After photo</span>
+          <p class="hint">Tap to upload</p>
+          <input type="file" accept="image/*" capture="environment" id="after-input">
+        </div>
+      </div>
+      <p class="error-text" id="form-error"></p>
+      <button type="submit" class="submit">Add entry</button>
+    </form>
+  </section>
+
+  <section>
+    <div class="log-header">
+      <h2 class="section-title" style="margin-bottom:0;">Activity log</h2>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="log-count" id="log-count"></span>
+        <div class="view-toggle">
+          <button type="button" class="view-btn active" id="view-field-btn">Field view</button>
+          <button type="button" class="view-btn" id="view-office-btn">Office view</button>
+        </div>
+      </div>
+    </div>
+    <div id="entries"></div>
+    <div id="office-view" style="display:none;"></div>
+  </section>
+</div>
+
+<script>
+const STORAGE_KEY = 'construction-site-log';
+const PASSCODE_KEY = 'construction-site-log-admin-passcode';
+const SITE_GROUPS = ['Otis','Palanan','Estafine','San Juan','Bignay','Yu Residences','Hereford','Meycauyan','Others'];
+let entries = [];
+let adminPasscode = null;
+
+const locationOtherField = document.getElementById('location-other-field');
+const locationOtherInput = document.getElementById('location-other');
+
+const settingsBtn = document.getElementById('settings-btn');
+const settingsOverlay = document.getElementById('settings-overlay');
+const settingsPasscodeBtn = document.getElementById('settings-passcode-btn');
+const settingsCloseBtn = document.getElementById('settings-close-btn');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitle = document.getElementById('modal-title');
+const modalDesc = document.getElementById('modal-desc');
+const modalInput = document.getElementById('modal-input');
+const modalError = document.getElementById('modal-error');
+const modalCancel = document.getElementById('modal-cancel');
+const modalConfirm = document.getElementById('modal-confirm');
+let modalMode = null;
+let pendingDeleteId = null;
+let pendingNewPasscode = null;
+
+const lightboxOverlay = document.getElementById('lightbox-overlay');
+const lightboxTitle = document.getElementById('lightbox-title');
+const lightboxBeforeImg = document.getElementById('lightbox-before-img');
+const lightboxAfterImg = document.getElementById('lightbox-after-img');
+const lightboxCompare = document.getElementById('lightbox-compare');
+const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
+const lightboxScroll = document.getElementById('lightbox-scroll');
+const lightboxTabBefore = document.getElementById('lightbox-tab-before');
+const lightboxTabAfter = document.getElementById('lightbox-tab-after');
+const zoomInBtn = document.getElementById('zoom-in-btn');
+const zoomOutBtn = document.getElementById('zoom-out-btn');
+const zoomLevelEl = document.getElementById('zoom-level');
+let zoomLevel = 100;
+
+function setLightboxTab(photo){
+  lightboxTabBefore.classList.toggle('active', photo === 'before');
+  lightboxTabAfter.classList.toggle('active', photo === 'after');
+  lightboxBeforeImg.style.display = photo === 'before' ? 'block' : 'none';
+  lightboxAfterImg.style.display = photo === 'after' ? 'block' : 'none';
+}
+lightboxTabBefore.addEventListener('click', () => setLightboxTab('before'));
+lightboxTabAfter.addEventListener('click', () => setLightboxTab('after'));
+
+function openLightbox(entry){
+  lightboxBeforeImg.src = entry.before;
+  lightboxAfterImg.src = entry.after;
+  lightboxTitle.textContent = `${entry.location} — ${formatDate(entry.date)}`;
+  setLightboxTab('before');
+  zoomLevel = 100;
+  applyZoom();
+  lightboxOverlay.classList.add('open');
+}
+function closeLightbox(){
+  lightboxOverlay.classList.remove('open');
+}
+function applyZoom(){
+  lightboxCompare.style.width = zoomLevel + '%';
+  zoomLevelEl.textContent = zoomLevel + '%';
+}
+zoomInBtn.addEventListener('click', () => {
+  zoomLevel = Math.min(300, zoomLevel + 25);
+  applyZoom();
+});
+zoomOutBtn.addEventListener('click', () => {
+  zoomLevel = Math.max(100, zoomLevel - 25);
+  applyZoom();
+});
+lightboxCloseBtn.addEventListener('click', closeLightbox);
+lightboxOverlay.addEventListener('click', e => {
+  if(e.target === lightboxOverlay) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && lightboxOverlay.classList.contains('open')) closeLightbox();
+});
+
+function openModal(mode, opts){
+  modalMode = mode;
+  modalInput.value = '';
+  modalError.style.display = 'none';
+  modalInput.style.display = 'block';
+  if(mode === 'set'){
+    modalTitle.textContent = adminPasscode ? 'Change admin passcode' : 'Set admin passcode';
+    modalDesc.textContent = adminPasscode
+      ? 'Enter the current passcode to continue.'
+      : 'Choose a passcode. Only whoever knows it can delete entries or change it later.';
+    modalInput.placeholder = adminPasscode ? 'Current passcode' : 'New passcode';
+  } else if(mode === 'set-new'){
+    modalTitle.textContent = 'New passcode';
+    modalDesc.textContent = 'Enter the new admin passcode.';
+    modalInput.placeholder = 'New passcode';
+  } else if(mode === 'set-confirm'){
+    modalTitle.textContent = 'Confirm new passcode';
+    modalDesc.textContent = 'Re-enter the new passcode to confirm it.';
+    modalInput.placeholder = 'Re-enter new passcode';
+  } else if(mode === 'delete'){
+    pendingDeleteId = opts.id;
+    modalTitle.textContent = 'Enter admin passcode';
+    modalDesc.textContent = 'Deleting entries requires the admin passcode.';
+    modalInput.placeholder = 'Passcode';
+  }
+  modalOverlay.classList.add('open');
+  modalInput.focus();
+}
+
+function closeModal(){
+  modalOverlay.classList.remove('open');
+  modalMode = null;
+  pendingDeleteId = null;
+  pendingNewPasscode = null;
+}
+
+modalCancel.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', e => {
+  if(e.target === modalOverlay) closeModal();
+});
+
+function openSettings(){
+  settingsPasscodeBtn.textContent = adminPasscode ? 'Change passcode' : 'Set passcode';
+  settingsOverlay.classList.add('open');
+}
+function closeSettings(){
+  settingsOverlay.classList.remove('open');
+}
+
+settingsBtn.addEventListener('click', openSettings);
+settingsCloseBtn.addEventListener('click', closeSettings);
+settingsOverlay.addEventListener('click', e => {
+  if(e.target === settingsOverlay) closeSettings();
+});
+
+settingsPasscodeBtn.addEventListener('click', () => {
+  closeSettings();
+  if(!adminPasscode){
+    openModal('set-new');
+  } else {
+    openModal('set');
+  }
+});
+
+modalConfirm.addEventListener('click', async () => {
+  const value = modalInput.value;
+  if(!value){
+    modalError.textContent = 'Enter a passcode.';
+    modalError.style.display = 'block';
+    return;
+  }
+  if(modalMode === 'set-new'){
+    pendingNewPasscode = value;
+    openModal('set-confirm');
+  } else if(modalMode === 'set-confirm'){
+    if(value !== pendingNewPasscode){
+      modalMode = 'set-new';
+      modalTitle.textContent = 'New passcode';
+      modalDesc.textContent = 'Enter the new admin passcode.';
+      modalInput.placeholder = 'New passcode';
+      modalInput.value = '';
+      modalError.textContent = 'Passcodes did not match. Try again.';
+      modalError.style.display = 'block';
+      modalInput.focus();
+      return;
+    }
+    adminPasscode = value;
+    await savePasscode();
+    closeModal();
+  } else if(modalMode === 'set'){
+    if(value !== adminPasscode){
+      modalError.textContent = 'That passcode is incorrect.';
+      modalError.style.display = 'block';
+      return;
+    }
+    openModal('set-new');
+  } else if(modalMode === 'delete'){
+    if(value !== adminPasscode){
+      modalError.textContent = 'That passcode is incorrect.';
+      modalError.style.display = 'block';
+      return;
+    }
+    const idToDelete = pendingDeleteId;
+    closeModal();
+    entries = entries.filter(en => en.id !== idToDelete);
+    await saveEntries();
+    renderEntries();
+  }
+});
+
+modalInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') modalConfirm.click();
+});
+
+async function savePasscode(){
+  try{
+    await window.storage.set(PASSCODE_KEY, adminPasscode, true);
+  }catch(err){}
+}
+
+async function loadPasscode(){
+  try{
+    const result = await window.storage.get(PASSCODE_KEY, true);
+    adminPasscode = result ? result.value : null;
+  }catch(err){
+    adminPasscode = null;
+  }
+}
+
+const form = document.getElementById('entry-form');
+const dateInput = document.getElementById('date');
+const locationInput = document.getElementById('location');
+const workerInput = document.getElementById('worker');
+
+locationInput.addEventListener('change', () => {
+  if(locationInput.value === 'Others'){
+    locationOtherField.style.display = 'flex';
+    locationOtherInput.focus();
+  } else {
+    locationOtherField.style.display = 'none';
+    locationOtherInput.value = '';
+  }
+});
+let beforeInput = document.getElementById('before-input');
+let afterInput = document.getElementById('after-input');
+const beforeBox = document.getElementById('before-box');
+const afterBox = document.getElementById('after-box');
+const formError = document.getElementById('form-error');
+const entriesEl = document.getElementById('entries');
+const logCount = document.getElementById('log-count');
+const officeViewEl = document.getElementById('office-view');
+const viewFieldBtn = document.getElementById('view-field-btn');
+const viewOfficeBtn = document.getElementById('view-office-btn');
+
+viewFieldBtn.addEventListener('click', () => {
+  viewFieldBtn.classList.add('active');
+  viewOfficeBtn.classList.remove('active');
+  entriesEl.style.display = 'block';
+  officeViewEl.style.display = 'none';
+});
+viewOfficeBtn.addEventListener('click', () => {
+  viewOfficeBtn.classList.add('active');
+  viewFieldBtn.classList.remove('active');
+  entriesEl.style.display = 'none';
+  officeViewEl.style.display = 'block';
+  renderOfficeView();
+});
+
+function renderOfficeView(){
+  let rows = '';
+  SITE_GROUPS.forEach(group => {
+    const groupEntries = entries.filter(en => (en.site || en.location) === group);
+    if(groupEntries.length === 0){
+      rows += `<tr class="no-entries">
+        <td class="site-name">${escapeHtml(group)}</td>
+        <td>—</td>
+        <td>No entries yet</td>
+        <td>—</td>
+      </tr>`;
+    } else {
+      const latest = groupEntries[0];
+      rows += `<tr>
+        <td class="site-name">${escapeHtml(group)}</td>
+        <td><span class="count-badge">${groupEntries.length}</span></td>
+        <td>${formatDate(latest.date)}</td>
+        <td>${escapeHtml(latest.worker)}</td>
+      </tr>`;
+    }
+  });
+  officeViewEl.innerHTML = `
+    <table class="office-table">
+      <thead>
+        <tr>
+          <th>Site</th>
+          <th>Entries</th>
+          <th>Latest entry</th>
+          <th>Latest worker</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+dateInput.value = new Date().toISOString().split('T')[0];
+
+let beforeData = null;
+let afterData = null;
+let beforeUploadedAt = null;
+let afterUploadedAt = null;
+
+function setupUpload(input, box, setter){
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if(!file) return;
+    const uploadedAt = Date.now();
+    compressImage(file, dataUrl => {
+      setter(dataUrl, uploadedAt);
+      box.classList.add('filled');
+      box.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      box.appendChild(img);
+      box.appendChild(input);
+    });
+  });
+}
+
+function compressImage(file, callback){
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const maxW = 900;
+      const scale = Math.min(1, maxW / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.72));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+setupUpload(beforeInput, beforeBox, (v, ts) => { beforeData = v; beforeUploadedAt = ts; });
+setupUpload(afterInput, afterBox, (v, ts) => { afterData = v; afterUploadedAt = ts; });
+
+function showError(msg){
+  formError.textContent = msg;
+  formError.style.display = 'block';
+}
+function clearError(){
+  formError.style.display = 'none';
+  formError.textContent = '';
+}
+
+function resetBox(box, oldInput, label, kind){
+  box.classList.remove('filled');
+  box.innerHTML = `<span class="tag">${label}</span><p class="hint">Tap to upload</p>`;
+  const freshInput = document.createElement('input');
+  freshInput.type = 'file';
+  freshInput.accept = 'image/*';
+  freshInput.setAttribute('capture', 'environment');
+  freshInput.id = oldInput.id;
+  box.appendChild(freshInput);
+  if(kind === 'before'){
+    beforeInput = freshInput;
+    setupUpload(beforeInput, beforeBox, (v, ts) => { beforeData = v; beforeUploadedAt = ts; });
+  } else {
+    afterInput = freshInput;
+    setupUpload(afterInput, afterBox, (v, ts) => { afterData = v; afterUploadedAt = ts; });
+  }
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearError();
+  if(!dateInput.value || !locationInput.value || !workerInput.value.trim()){
+    showError('Fill in the date, site, and worker before adding this entry.');
+    return;
+  }
+  if(locationInput.value === 'Others' && !locationOtherInput.value.trim()){
+    showError('Enter a name for the site.');
+    return;
+  }
+  if(!beforeData || !afterData){
+    showError('Upload both a before and an after photo.');
+    return;
+  }
+  const site = locationInput.value;
+  const displayLocation = site === 'Others' ? locationOtherInput.value.trim() : site;
+  const entry = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+    date: dateInput.value,
+    site: site,
+    location: displayLocation,
+    worker: workerInput.value.trim(),
+    before: beforeData,
+    after: afterData,
+    beforeUploadedAt: beforeUploadedAt,
+    afterUploadedAt: afterUploadedAt,
+    createdAt: Date.now()
+  };
+  entries.unshift(entry);
+  await saveEntries();
+  renderEntries();
+  locationInput.value = '';
+  locationOtherInput.value = '';
+  locationOtherField.style.display = 'none';
+  workerInput.value = '';
+  dateInput.value = new Date().toISOString().split('T')[0];
+  beforeData = null;
+  afterData = null;
+  beforeUploadedAt = null;
+  afterUploadedAt = null;
+  resetBox(beforeBox, beforeInput, 'Before photo', 'before');
+  resetBox(afterBox, afterInput, 'After photo', 'after');
+});
+
+function formatDate(iso){
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+}
+
+function formatDateTime(ms){
+  if(!ms) return '';
+  const d = new Date(ms);
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric' }) + ', ' +
+    d.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function renderEntries(){
+  logCount.textContent = entries.length === 1 ? '1 entry' : entries.length + ' entries';
+  renderOfficeView();
+  if(entries.length === 0){
+    entriesEl.innerHTML = `<div class="empty"><p class="big">No entries yet</p><p>Add the first before-and-after photo set above to start the log.</p></div>`;
+    return;
+  }
+  entriesEl.innerHTML = '';
+  SITE_GROUPS.forEach(group => {
+    const groupEntries = entries.filter(en => (en.site || en.location) === group);
+    if(groupEntries.length === 0) return;
+    const block = document.createElement('div');
+    block.className = 'group-block';
+    const header = document.createElement('div');
+    header.className = 'group-header';
+    header.innerHTML = `<h3>${escapeHtml(group)}</h3><span class="group-count">${groupEntries.length === 1 ? '1 entry' : groupEntries.length + ' entries'}</span>`;
+    block.appendChild(header);
+    groupEntries.forEach(entry => {
+      block.appendChild(buildEntryCard(entry));
+    });
+    entriesEl.appendChild(block);
+  });
+  entriesEl.querySelectorAll('.photo-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const photo = btn.dataset.photo;
+      const frame = entriesEl.querySelector(`.photo-frame[data-id="${id}"]`);
+      if(!frame) return;
+      frame.dataset.active = photo;
+      entriesEl.querySelectorAll(`.photo-tab[data-id="${id}"]`).forEach(b => b.classList.toggle('active', b === btn));
+      frame.querySelector('.photo-before').style.display = photo === 'before' ? 'block' : 'none';
+      frame.querySelector('.photo-after').style.display = photo === 'after' ? 'block' : 'none';
+      const replaceBtn = frame.querySelector('.replace-btn');
+      if(replaceBtn) replaceBtn.textContent = photo === 'before' ? 'Replace before photo' : 'Replace after photo';
+    });
+  });
+  entriesEl.querySelectorAll('.zoom-open').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const entry = entries.find(en => en.id === btn.dataset.id);
+      if(entry) openLightbox(entry);
+    });
+  });
+  entriesEl.querySelectorAll('.replace-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const input = entriesEl.querySelector(`.replace-input[data-id="${btn.dataset.id}"]`);
+      if(input) input.click();
+    });
+  });
+  entriesEl.querySelectorAll('.replace-input').forEach(input => {
+    input.addEventListener('change', () => {
+      const file = input.files[0];
+      if(!file) return;
+      const id = input.dataset.id;
+      const frame = entriesEl.querySelector(`.photo-frame[data-id="${id}"]`);
+      const activePhoto = frame ? (frame.dataset.active || 'before') : 'before';
+      const uploadedAt = Date.now();
+      compressImage(file, async dataUrl => {
+        const entry = entries.find(en => en.id === id);
+        if(!entry) return;
+        if(activePhoto === 'before'){
+          entry.before = dataUrl;
+          entry.beforeUploadedAt = uploadedAt;
+        } else {
+          entry.after = dataUrl;
+          entry.afterUploadedAt = uploadedAt;
+        }
+        await saveEntries();
+        renderEntries();
+      });
+    });
+  });
+  entriesEl.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(!adminPasscode){
+        openModal('set-new');
+        return;
+      }
+      openModal('delete', { id: btn.dataset.id });
+    });
+  });
+  entriesEl.querySelectorAll('.comment-save').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const textarea = entriesEl.querySelector(`textarea[data-id="${id}"]`);
+      const status = entriesEl.querySelector(`.comment-status[data-id="${id}"]`);
+      const entry = entries.find(en => en.id === id);
+      if(!entry) return;
+      entry.comment = textarea.value.trim();
+      await saveEntries();
+      status.style.display = 'inline';
+      setTimeout(() => { status.style.display = 'none'; }, 2000);
+    });
+  });
+}
+
+function buildEntryCard(entry){
+  const card = document.createElement('div');
+  card.className = 'entry';
+  card.innerHTML = `
+    <div class="photo-tabs-wrap">
+      <div class="photo-tabs">
+        <button type="button" class="photo-tab active" data-photo="before" data-id="${entry.id}">Before</button>
+        <button type="button" class="photo-tab" data-photo="after" data-id="${entry.id}">After</button>
+      </div>
+    </div>
+    <div class="photo-frame" data-id="${entry.id}" data-active="before">
+      <img class="photo-before" src="${entry.before}" alt="Before photo">
+      <img class="photo-after" src="${entry.after}" alt="After photo" style="display:none;">
+      <button type="button" class="zoom-open" data-id="${entry.id}" aria-label="Zoom photo" title="Zoom">🔍</button>
+      <button type="button" class="replace-btn" data-id="${entry.id}" title="Replace this photo">Replace before photo</button>
+      <input type="file" accept="image/*" capture="environment" class="replace-input" data-id="${entry.id}" style="display:none;">
+    </div>
+    <div class="meta">
+      <div class="meta-item"><span class="k">Date</span><span class="v">${formatDate(entry.date)}</span></div>
+      <div class="meta-item"><span class="k">Site location</span><span class="v">${escapeHtml(entry.location)}</span></div>
+      <div class="meta-item"><span class="k">Worker</span><span class="v">${escapeHtml(entry.worker)}</span></div>
+      ${entry.beforeUploadedAt ? `<div class="meta-item"><span class="k">Before photo uploaded</span><span class="v">${formatDateTime(entry.beforeUploadedAt)}</span></div>` : ''}
+      ${entry.afterUploadedAt ? `<div class="meta-item"><span class="k">After photo uploaded</span><span class="v">${formatDateTime(entry.afterUploadedAt)}</span></div>` : ''}
+      <div class="spacer"></div>
+      <button class="delete-btn" data-id="${entry.id}">Delete</button>
+    </div>
+    <div class="comment-block">
+      <label for="comment-${entry.id}">Comments</label>
+      <textarea id="comment-${entry.id}" data-id="${entry.id}" placeholder="Add a note about this task">${escapeHtml(entry.comment || '')}</textarea>
+      <div class="comment-actions">
+        <button type="button" class="comment-save" data-id="${entry.id}">Save comment</button>
+        <span class="comment-status" data-id="${entry.id}">Saved</span>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+async function saveEntries(){
+  try{
+    const result = await window.storage.set(STORAGE_KEY, JSON.stringify(entries), true);
+    if(!result){
+      showError('Could not save this entry. Try again.');
+    }
+  }catch(err){
+    showError('Could not save this entry. Try again.');
+  }
+}
+
+async function loadEntries(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, true);
+    entries = result ? JSON.parse(result.value) : [];
+  }catch(err){
+    entries = [];
+  }
+  renderEntries();
+}
+
+loadPasscode();
+loadEntries();
+</script>
+</body>
+</html>
